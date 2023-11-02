@@ -5,7 +5,19 @@ use crate::graph::{self, ArgumentationFramework};
 use std::{process::exit};
 use std::time::{Duration, Instant};
 
-pub fn get_input(file_path : &str) -> ArgumentationFramework {
+pub enum Format {
+    APX,
+    CNF
+}
+
+pub fn get_input(file_path : &str, format : Format) -> ArgumentationFramework {
+    match format {
+        Format::APX => readingAPX(file_path),
+        Format::CNF => readingCNF(file_path),
+    }
+}
+
+fn readingAPX( file_path : &str) -> ArgumentationFramework {
     let contents = fs::read_to_string(file_path)
         .expect("Should have been able to read the file");
     let a = contents.trim().split('\n');
@@ -18,10 +30,27 @@ pub fn get_input(file_path : &str) -> ArgumentationFramework {
     let af = ArgumentationFramework::new(n);
     af
 }
+fn readingCNF( file_path : &str) -> ArgumentationFramework {
+    let contents = fs::read_to_string(file_path)
+        .expect("Should have been able to read the file");
+    let a = contents.trim().split('\n');
+    let first_line = a.next().unwrap();
+    let iter: Vec<&str> = first_line.split_ascii_whitespace().collect();
+    let nb_arg = iter[2].parse::<i32>().unwrap();
+    
+
+
+    for line in a {
+
+    }
+    let af = ArgumentationFramework::new(n);
+    af
+}
+
 fn print_supported_problems() {
     println!("[DC-CO,DC-ST,DC-SST,DC-STG,DC-ID,DS-PR,DS-ST,DS-SST,DS-STG]");
 }
-pub fn init() {
+pub fn launcher() {
     let cli = Cli::parse();
     
     if cli.problems { // Print support problem if --problems
@@ -39,11 +68,10 @@ pub fn init() {
                 exit(1);
             }
         }
-
     }
     
     let start = Instant::now();
-    let af = get_input("test.txt");
+    let af = get_input("test.txt", Format::APX);
     println!("{};",start.elapsed().as_millis() as f32 / 1000.0);
 
 }
