@@ -65,18 +65,36 @@ pub fn launcher() {
         print_supported_problems();
         exit(0);
     }
-    if let Some(x) = cli.task {
-        if x.contains('-') {
-            let mut r = x.split('-');
-            let problem = r.next().unwrap();
-            let semantics = r.next().unwrap();
+    let arg_name = cli.argument.clone();
+    let argument_name = match arg_name {
+        Some(arg) => { arg },
+        None => {
+            eprintln!("Expected an argument with -a");
+            exit(1);
+        }
+    };
+    let pr_sm = cli.task.clone();
+    let (problem, semantic) = match pr_sm {
+        Some(t) => {
+            if !t.contains('-') {
+                eprintln!("Error parsing command-line arguments\n");
+                exit(1);
+            }
+            let mut r = t.split('-');
+            let problem = String::from(r.next().unwrap());
+            let semantics = String::from(r.next().unwrap());
             println!("{} {}", problem, semantics);
             if problem != "DC" && problem != "DS" {
                 eprintln!("This software only supports problems DC and DS.");
                 exit(1);
             }
+            (problem, semantics)
+        },
+        None => {
+            eprintln!("expected a problem and a semantic");
+            exit(1) 
         }
-    }
+    };
     let file = cli.input_af.clone().unwrap();
     let file_path = file.as_str();
     println!("{file_path}");

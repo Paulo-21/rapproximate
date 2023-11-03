@@ -1,4 +1,3 @@
-
 pub struct ArgumentationFramework {
     pub af_attacker : Vec<Vec<i32>>,
 	pub af_attackee : Vec<Vec<i32>>,
