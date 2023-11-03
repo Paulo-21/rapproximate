@@ -1,9 +1,9 @@
 use std::fs;
 use clap::Parser;
-use clap::{arg};
-use crate::graph::{self, ArgumentationFramework};
-use std::{process::exit};
-use std::time::{Duration, Instant};
+use clap::arg;
+use crate::graph::ArgumentationFramework;
+use std::process::exit;
+use std::time::Instant;
 
 pub enum Format {
     APX,
@@ -17,23 +17,6 @@ pub fn get_input(file_path : &str, format : Format) -> ArgumentationFramework {
     }
 }
 
-fn readingAPX( file_path : &str) -> ArgumentationFramework {
-    
-    let nb_arg = find_number_argument(file_path);
-    let af = ArgumentationFramework::new(nb_arg as usize);
-
-    let contents = fs::read_to_string(file_path)
-        .expect("Should have been able to read the file");
-    let a = contents.trim().split('\n');
-
-    for line in a {
-        if !line.starts_with("#") && (!line.trim().eq("")) {
-            af.add
-        }
-    }
-    
-    af
-}
 fn readingCNF( file_path : &str) -> ArgumentationFramework {
     let contents = fs::read_to_string(file_path)
     .expect("Should have been able to read the file");
@@ -46,6 +29,7 @@ fn readingCNF( file_path : &str) -> ArgumentationFramework {
     for line in content_iter {
         if !line.starts_with('#') && (!line.trim().eq("")) {
             let (attacker,target) = parseCNFAttackLine(line);
+            //println!("{} {}", attacker, target);
             af.add_attack(attacker, target);
         }
     }
@@ -57,12 +41,8 @@ fn find_number_argument(file_path : &str) -> i32 {
     let a = contents.trim().split('\n');
     let mut nb_arg = 0;
     for line in a {
-        if line.starts_with("arg") {
-            nb_arg +=1;
-        }
-        else {
-            break;
-        }
+        if line.starts_with("arg") { nb_arg +=1; }
+        else { break; }
     }
     nb_arg
 }
@@ -77,9 +57,10 @@ fn parseCNFAttackLine (line : &str) -> (i32,i32) {
 fn print_supported_problems() {
     println!("[DC-CO,DC-ST,DC-SST,DC-STG,DC-ID,DS-PR,DS-ST,DS-SST,DS-STG]");
 }
+
 pub fn launcher() {
     let cli = Cli::parse();
-    
+
     if cli.problems { // Print support problem if --problems
         print_supported_problems();
         exit(0);
@@ -96,20 +77,21 @@ pub fn launcher() {
             }
         }
     }
-    
+    let file = cli.input_af.clone().unwrap();
+    let file_path = file.as_str();
+    println!("{file_path}");
     let start = Instant::now();
-    let af = get_input("test.txt", Format::APX);
+    let af = get_input(file_path, Format::CNF);
     println!("{};",start.elapsed().as_millis() as f32 / 1000.0);
-
+    println!("{}", af.af_attackee.len());
+    
 }
-
-
 
 
 #[derive(Parser, Debug)]
 #[command(author="Paul Cibier", version, about="This tool can solve all the problems in the approximate track of ICCMA 2023",
- long_about = None)]
- struct Cli {
+long_about = None)]
+struct Cli {
     #[arg(short, long)]
     /// Quary argument for credulous and skeptical acceptance
     argument : Option<String>,
@@ -122,4 +104,21 @@ pub fn launcher() {
     #[arg( long)]
     /// Prints the supported computational problems and exits
     problems : bool
+}
+fn readingAPX( file_path : &str) -> ArgumentationFramework {
+    
+    let nb_arg = find_number_argument(file_path);
+    let af = ArgumentationFramework::new(nb_arg as usize);
+
+    let contents = fs::read_to_string(file_path)
+        .expect("Should have been able to read the file");
+    let a = contents.trim().split('\n');
+
+    for line in a {
+        if !line.starts_with("#") && (!line.trim().eq("")) {
+            //af.add
+        }
+    }
+    
+    af
 }
