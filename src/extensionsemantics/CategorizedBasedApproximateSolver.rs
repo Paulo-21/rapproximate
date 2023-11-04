@@ -24,7 +24,7 @@ pub fn solve(mut af : ArgumentationFramework, mut task : Task) -> bool{
     /*h-Categorized Part */
     let start = Instant::now();
     let degree = categorizer::solve(af, &task);
-    print!("{};", start.elapsed().as_millis());
+    print!("{};", start.elapsed().as_millis() as f32 / 1000.);
     print!("{:.15};", degree);
     let threshold = choice_threshold(&task);
 	if degree >= threshold {

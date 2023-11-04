@@ -2,7 +2,6 @@ use std::fs;
 use clap::Parser;
 use clap::arg;
 use crate::extensionsemantics::CategorizedBasedApproximateSolver;
-use crate::extensionsemantics::SimpleGroundedSemanticsSolver;
 use crate::graph::ArgumentationFramework;
 use std::process::exit;
 use std::time::Instant;
