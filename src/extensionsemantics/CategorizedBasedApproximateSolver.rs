@@ -4,7 +4,6 @@ use crate::{graph::ArgumentationFramework, parser::{Problem, Task}, extensionsem
 use crate::parser::Semantics::*;
 pub fn solve(mut af : ArgumentationFramework, mut task : Task) -> bool{
     
-
     /*Grounded Part */
     let start = Instant::now();
     let mut t = task.clone();
@@ -25,7 +24,7 @@ pub fn solve(mut af : ArgumentationFramework, mut task : Task) -> bool{
     let start = Instant::now();
     let degree = categorizer::solve(af, &task);
     print!("{};", start.elapsed().as_millis() as f32 / 1000.);
-    print!("{:.15};", degree);
+    print!("{:.17};", degree);
     let threshold = choice_threshold(&task);
 	if degree >= threshold {
 		return true;
@@ -33,7 +32,7 @@ pub fn solve(mut af : ArgumentationFramework, mut task : Task) -> bool{
 		return false;
 	}
 }
-fn choice_threshold(task : &Task) -> f32 {
+fn choice_threshold(task : &Task) -> f64 {
     if task.problem == Problem::DC  {
 		match task.semantics {
 				CO |
@@ -41,7 +40,6 @@ fn choice_threshold(task : &Task) -> f32 {
 				SST => {
 				    return 0.5
                 },
-					
 				STG => {
 					return 0.
                 },
@@ -49,8 +47,7 @@ fn choice_threshold(task : &Task) -> f32 {
 				_ => {
                     eprintln!("This combination (semantics, problem) is not handled by this solver.");
 					exit(1);
-                }
-					
+                }	
 			}
 		}
 		
