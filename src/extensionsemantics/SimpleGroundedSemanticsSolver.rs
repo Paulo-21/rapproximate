@@ -1,17 +1,15 @@
 use std::process::exit;
 
 use crate::{parser::{Format, Problem, Task}, graph::ArgumentationFramework};
-
+#[derive(Clone, PartialEq)]
 enum Label {
     IN, OUT, UNDEC
 }
-pub trait Solution {
-    fn get_solution(&self) -> bool;
-}
-pub fn solve(task : Task, af : &mut ArgumentationFramework) -> Vec<usize> {
+
+pub fn solve(task : &Task, af : &mut ArgumentationFramework) -> Vec<usize> {
     let problem_type = task.problem;
     let mut labelling = initLabelling(&af);
-    let argument = 1;
+    
     let mut hasChanged = true;
     while hasChanged {
         let new_labelling = propagateDefense(&af, &labelling);
@@ -46,14 +44,56 @@ pub fn solve(task : Task, af : &mut ArgumentationFramework) -> Vec<usize> {
 }
 
 fn initLabelling( af : &ArgumentationFramework) -> Vec<Label> {
-    let labelling : Vec<Label> = Vec::with_capacity(af.nb_argument);
-
-    Vec::new()
+    let mut labelling : Vec<Label> = Vec::with_capacity(af.nb_argument);
+	for i in 0..labelling.len() {
+	    if af.af_attacker[i].is_empty() {
+			labelling[i] = Label::IN;
+		} else {
+		    labelling[i] = Label::UNDEC;
+		}
+	}
+	return labelling;
 }
 
 fn propagateDefense(af : &ArgumentationFramework, labelling : &Vec<Label>) -> Vec<Label> {
-    Vec::new()
+   let mut result =  vec![Label::UNDEC;labelling.len()];
+
+		// We check all the arguments of the AF and if an argument has the label IN then all the arguments it attacks have the label OUT.
+		for i in 0..labelling.len() {
+			match labelling[i]{
+                Label::IN => {
+                    result[i] = Label::IN;
+                    for argument in &af.af_attackee[i] {
+                        result[(*argument) as usize] = Label::OUT;
+                    }
+                },
+                _=>{}
+			}
+		}
+
+		for i in 0..labelling.len() {
+			if result[i] == Label::UNDEC && allAttackersAreOut(af, labelling, i) {
+				result[i] = Label::IN;
+			}
+		}
+		return result;
 }
-fn sameLabelling(labelling : &Vec<Label>, newOne : &Vec<Label>) -> bool {
-    false
+fn allAttackersAreOut(af : &ArgumentationFramework, labelling : &Vec<Label>, index : usize) -> bool {
+    for attacker in &af.af_attacker[index] {
+			if labelling[(*attacker) as usize] != Label::OUT {
+				return false;
+			}
+		}
+	true
+}
+fn sameLabelling(labelling1 : &Vec<Label>, labelling2 : &Vec<Label>) -> bool {
+    if labelling1.len() != labelling2.len() {
+	    return false;
+	}
+	for i in 0..labelling1.len() {
+		if labelling1[i] != labelling2[i] {
+			return false;
+		}
+	}
+    true
 }

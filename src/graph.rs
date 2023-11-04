@@ -8,8 +8,7 @@ impl ArgumentationFramework {
     pub fn new(nb_arg : usize) -> Self {
         let af_attackee = vec![Vec::new();nb_arg];
         let af_attacker = vec![Vec::new();nb_arg];
-        //let argument_names = HashMap::new();
-        Self { af_attackee , af_attacker, nb_argument : nb_arg }//, argument_names }
+        Self { af_attackee , af_attacker, nb_argument : nb_arg }
     }
     pub fn add_attack(&mut self, attacker : i32, target : i32) {
         self.af_attacker[(target-1) as usize].push(attacker-1);

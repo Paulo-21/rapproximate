@@ -1,6 +1,7 @@
 use std::fs;
 use clap::Parser;
 use clap::arg;
+use crate::extensionsemantics::CategorizedBasedApproximateSolver;
 use crate::extensionsemantics::SimpleGroundedSemanticsSolver;
 use crate::graph::ArgumentationFramework;
 use std::process::exit;
@@ -10,12 +11,18 @@ pub enum Format {
     APX,
     CNF
 }
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Problem {
     DS, DC, SE
 }
+#[derive(Debug, Clone, Copy)]
+pub enum Semantics {
+    CO,ST,SST,STG,ID,PR
+}
+#[derive(Debug, Clone)]
 pub struct Task {
     pub problem : Problem,
-    pub semantics : String,
+    pub semantics : Semantics,
     pub argument : usize,
 }
 pub fn get_input(file_path : &str, format : Format) -> ArgumentationFramework {
@@ -75,7 +82,7 @@ pub fn launcher() {
     }
     let arg_name = cli.argument.clone();
     let argument_name = match arg_name {
-        Some(arg) => { arg.parse::<usize>().unwrap() },
+        Some(arg) => { arg.parse::<usize>().unwrap()-1 },
         None => {
             eprintln!("Expected an argument with -a");
             exit(1);
@@ -97,7 +104,15 @@ pub fn launcher() {
                 _ => { eprintln!("This problem is not handled by the program at this time"); exit(1);}
             };
             let semantics = String::from(r.next().unwrap());
-            
+            let semantics = match semantics.as_str() {
+                "ST" => Semantics::ST,
+                "SST" => Semantics::SST,
+                "STG" => Semantics::STG,
+                "ID" => Semantics::ID,
+                "PR" => Semantics::PR,
+                "CO" => Semantics::CO,
+                _ => { eprintln!("This problem is not handled by the program at this time"); exit(1);}
+            };
             (problem, semantics)
         },
         None => {
@@ -107,14 +122,12 @@ pub fn launcher() {
     };
     let file = cli.input_af.clone().unwrap();
     let file_path = file.as_str();
-    println!("{file_path}");
     let start = Instant::now();
-    let mut af = get_input(file_path, Format::CNF);
-    println!("{};",start.elapsed().as_millis() as f32 / 1000.0);
+    let af = get_input(file_path, Format::CNF);
+    print!("{};",start.elapsed().as_millis() as f32 / 1000.0);
     let task = Task { problem, semantics, argument : argument_name  };
-    /*Grounded Part */
-    let res = SimpleGroundedSemanticsSolver::solve(task, &mut af);
-
+    
+    print!("{}", CategorizedBasedApproximateSolver::solve(af, task));
 
 
 }
