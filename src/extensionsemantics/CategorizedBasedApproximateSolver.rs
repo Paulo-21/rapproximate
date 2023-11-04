@@ -1,3 +1,5 @@
-pub fn test () {
-    println!("Hello Cate");
+use crate::{graph::ArgumentationFramework, parser::{Problem, Task}};
+
+pub fn solve(af : ArgumentationFramework, task : Task) {
+    
 }
