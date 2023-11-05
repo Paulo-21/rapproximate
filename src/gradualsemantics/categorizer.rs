@@ -10,27 +10,36 @@ pub fn solve(af : ArgumentationFramework, task : &Task) -> f64 {
 
 fn computeFinalScore(af : &ArgumentationFramework) -> Vec<f64> {
     let mut res = initScores(af);
+    let mut newScores = initScores(af);
     let mut hasChanged = true;
+    
 		while hasChanged {
-			let newScores = computeOneStep(af,&res);
+			/*(newScores, hasChanged) =*/ computeOneStep(af,&res, &mut newScores);
 			if stabilisation(&res,&newScores) {
 				hasChanged = false;
 			}
+            let temp = res;
 			res = newScores;
+            newScores = temp;
 		}
 		return res;
 }
 
-fn computeOneStep(af : &ArgumentationFramework, scoresArg : &Vec<f64>) -> Vec<f64> {
-    let mut res = vec![0.;scoresArg.len()];
+fn computeOneStep(af : &ArgumentationFramework, scoresArg : &Vec<f64>, res : &mut Vec<f64>) {//-> (Vec<f64>, bool) {
+    //let mut res = vec![0.;scoresArg.len()];
+    //let mut res = Vec::with_capacity(scoresArg.len());
+    //let mut haschanged = true;
 		for i in 0..scoresArg.len() {
 			let mut sumScoreAttacker = 0.;
 			for  attacker in &af.af_attacker[i] {
-				sumScoreAttacker += scoresArg[*attacker as usize];
+                unsafe {
+                    sumScoreAttacker += scoresArg.get_unchecked(*attacker as usize);
+                }
 			}
-			res[i] = 1. / (1. + sumScoreAttacker);
+			res[i] = ( 1. / (1. + sumScoreAttacker));
+            //haschanged = (res[i] - scoresArg[i]).abs() > EPSILON;
 		}
-		return res;
+		//return (res, haschanged);
 }
 
 fn initScores(af : &ArgumentationFramework) -> Vec<f64> {
