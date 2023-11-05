@@ -1,4 +1,3 @@
-use std::collections::VecDeque;
 use crate::{graph::ArgumentationFramework, parser::Task};
 
 const EPSILON : f64 = 0.0001;
