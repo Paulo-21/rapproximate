@@ -1,6 +1,6 @@
-use std::process::exit;
+use std::{process::exit};
 
-use crate::{parser::{Format, Problem, Task}, graph::ArgumentationFramework};
+use crate::{parser::{Problem, Task}, graph::ArgumentationFramework};
 #[derive(Clone, PartialEq)]
 enum Label {
     IN, OUT, UNDEC
@@ -14,6 +14,9 @@ pub fn solve(task : &Task, af : &mut ArgumentationFramework) -> Vec<usize> {
     while hasChanged {
         let new_labelling = propagateDefense(&af, &labelling);
         hasChanged = !sameLabelling(&new_labelling, &labelling);
+        /*if sameLabelling(&new_labelling, &labelling) {
+            hasChanged = false;
+        }*/
         labelling = new_labelling;
     }
     let mut solution = Vec::<usize>::with_capacity(labelling.len());
@@ -45,18 +48,18 @@ pub fn solve(task : &Task, af : &mut ArgumentationFramework) -> Vec<usize> {
 
 fn initLabelling( af : &ArgumentationFramework) -> Vec<Label> {
     let mut labelling : Vec<Label> = Vec::with_capacity(af.nb_argument);
-	for i in 0..labelling.len() {
+	for i in 0..af.nb_argument {
 	    if af.af_attacker[i].is_empty() {
-			labelling[i] = Label::IN;
+			labelling.push(Label::IN);
 		} else {
-		    labelling[i] = Label::UNDEC;
+		    labelling.push(Label::UNDEC);
 		}
 	}
 	return labelling;
 }
 
 fn propagateDefense(af : &ArgumentationFramework, labelling : &Vec<Label>) -> Vec<Label> {
-   let mut result =  vec![Label::UNDEC;labelling.len()];
+    let mut result =  vec![Label::UNDEC;labelling.len()];
 
 		// We check all the arguments of the AF and if an argument has the label IN then all the arguments it attacks have the label OUT.
 		for i in 0..labelling.len() {
@@ -80,10 +83,10 @@ fn propagateDefense(af : &ArgumentationFramework, labelling : &Vec<Label>) -> Ve
 }
 fn allAttackersAreOut(af : &ArgumentationFramework, labelling : &Vec<Label>, index : usize) -> bool {
     for attacker in &af.af_attacker[index] {
-			if labelling[(*attacker) as usize] != Label::OUT {
-				return false;
-			}
+		if labelling[(*attacker) as usize] != Label::OUT {
+			return false;
 		}
+	}
 	true
 }
 fn sameLabelling(labelling1 : &Vec<Label>, labelling2 : &Vec<Label>) -> bool {
