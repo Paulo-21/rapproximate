@@ -63,7 +63,7 @@ fn propagateDefense(af : &ArgumentationFramework, labelling : &Vec<Label>) -> Ve
 
 		// We check all the arguments of the AF and if an argument has the label IN then all the arguments it attacks have the label OUT.
 		for i in 0..labelling.len() {
-			match labelling[i]{
+			match labelling[i] {
                 Label::IN => {
                     result[i] = Label::IN;
                     for argument in &af.af_attackee[i] {
