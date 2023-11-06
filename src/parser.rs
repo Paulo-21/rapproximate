@@ -1,4 +1,7 @@
 use std::fs;
+use std::io::Write;
+use std::io::stdout;
+
 use clap::Parser;
 use clap::arg;
 use crate::extensionsemantics::CategorizedBasedApproximateSolver;
@@ -126,6 +129,7 @@ pub fn launcher() {
     let start = Instant::now();
     let af = get_input(file_path, Format::CNF);
     print!("{};",start.elapsed().as_millis() as f32 / 1000.0);
+    stdout().flush();
     let task = Task { problem, semantics, argument : argument_name  };
     
     print!("{}", CategorizedBasedApproximateSolver::solve(af, task));
