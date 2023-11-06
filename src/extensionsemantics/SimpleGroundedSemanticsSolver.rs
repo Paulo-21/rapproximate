@@ -2,7 +2,7 @@ use std::{process::exit};
 
 use crate::{parser::{Problem, Task}, graph::ArgumentationFramework};
 #[derive(Clone, PartialEq)]
-enum Label {
+pub enum Label {
     IN, OUT, UNDEC
 }
 

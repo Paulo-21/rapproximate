@@ -1,2 +1,3 @@
 pub mod CategorizedBasedApproximateSolver;
 pub mod SimpleGroundedSemanticsSolver;
+pub mod SimpleGroundedSemanticsSolver2;

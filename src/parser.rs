@@ -6,6 +6,7 @@ use crate::graph::ArgumentationFramework;
 use std::process::exit;
 use std::time::Instant;
 
+
 pub enum Format {
     APX,
     CNF
@@ -47,6 +48,7 @@ fn readingCNF( file_path : &str) -> ArgumentationFramework {
             af.add_attack(attacker, target);
         }
     }
+    
     af
 }
 fn find_number_argument(file_path : &str) -> i32 {
