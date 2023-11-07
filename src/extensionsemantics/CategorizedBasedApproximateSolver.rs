@@ -1,6 +1,7 @@
 use std::{time::Instant, process::exit};
-use crate::{graph::ArgumentationFramework, parser::{Problem, Task}, extensionsemantics::{SimpleGroundedSemanticsSolver, SimpleGroundedSemanticsSolver2}, gradualsemantics::categorizer};
-use crate::parser::Semantics::*;
+use crate::{graph::ArgumentationFramework, cli::{Problem, Task}, extensionsemantics::{SimpleGroundedSemanticsSolver, SimpleGroundedSemanticsSolver2}, gradualsemantics::categorizer};
+use crate::cli::Semantics::*;
+
 pub fn solve(mut af : ArgumentationFramework, mut task : Task) -> bool{
     
     /*Grounded Part */
@@ -8,8 +9,8 @@ pub fn solve(mut af : ArgumentationFramework, mut task : Task) -> bool{
     let mut t = task.clone();
     t.problem = Problem::SE;
 	
-    //let groundedExtension = SimpleGroundedSemanticsSolver::solve(&t, &mut af);
-    let groundedExtension = SimpleGroundedSemanticsSolver2::solve(&mut af, &t);
+    let groundedExtension = SimpleGroundedSemanticsSolver::solve(&t, &mut af);
+    //let groundedExtension = SimpleGroundedSemanticsSolver2::solve(&mut af, &t);
     print!("{};", start.elapsed().as_millis() as f32/1000.0);
     if groundedExtension.contains(&task.argument) {
 		print!("None;None;");

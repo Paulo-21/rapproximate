@@ -1,4 +1,4 @@
-use crate::{graph::ArgumentationFramework, parser::Task};
+use crate::{graph::ArgumentationFramework, cli::Task};
 
 const EPSILON : f64 = 0.0001;
 

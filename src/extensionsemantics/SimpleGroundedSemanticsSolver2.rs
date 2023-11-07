@@ -1,6 +1,5 @@
-use crate::{parser::Task, graph::ArgumentationFramework};
+use crate::{cli::Task, graph::ArgumentationFramework};
 use crate::extensionsemantics::SimpleGroundedSemanticsSolver::Label;
-
 use std::collections::BTreeSet;
 use std::io::{stdout, Write};
 use std::time::Instant;

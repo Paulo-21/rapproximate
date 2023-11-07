@@ -1,6 +1,6 @@
 use std::{process::exit};
 
-use crate::{parser::{Problem, Task}, graph::ArgumentationFramework};
+use crate::{cli::{Problem, Task}, graph::ArgumentationFramework};
 #[derive(Clone, PartialEq)]
 pub enum Label {
     IN, OUT, UNDEC
