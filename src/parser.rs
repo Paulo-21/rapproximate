@@ -1,8 +1,8 @@
 use std::fs::{self, File};
-use std::io::{BufReader, BufRead, Read, stdout, Write, self};
+use std::io::{BufRead, self};
 use std::path::Path;
 use std::process::exit;
-use std::time::Instant;
+
 use crate::graph::ArgumentationFramework;
 use crate::cli::Format;
 

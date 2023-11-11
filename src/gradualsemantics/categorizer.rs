@@ -4,11 +4,11 @@ const EPSILON : f64 = 0.0001;
 
 pub fn solve(af : ArgumentationFramework, task : &Task) -> f64 {
     let score = computeFinalScore(&af);
-    let solution = score[task.argument];
+    
 	//let solution= computeFinalScore2(&af, task.argument);
 	//let solution= computeFinalScore2_test(&af, task.argument); // BEST
 	//let solution= compute_final_score2_deep(&af, task.argument);
-    solution
+    score[task.argument]
 }
 
 fn computeFinalScore(af : &ArgumentationFramework) -> Vec<f64> {
@@ -21,11 +21,9 @@ fn computeFinalScore(af : &ArgumentationFramework) -> Vec<f64> {
 			if stabilisation(&res,&newScores) {
 				hasChanged = false;
 			}
-            let temp = res;
-			res = newScores;
-            newScores = temp;
+            std::mem::swap(&mut res, &mut newScores);
 		}
-		return res;
+		res
 }
 
 fn computeOneStep(af : &ArgumentationFramework, scoresArg : &Vec<f64>, res : &mut Vec<f64>) {//-> (Vec<f64>, bool) {
@@ -112,10 +110,10 @@ fn initScores(af : &ArgumentationFramework) -> Vec<f64> {
 }
 
 fn stabilisation(tab1 : &Vec<f64>, tab2 : &Vec<f64>) -> bool {
-	for (i, x) in tab1.into_iter().enumerate() {
+	for (i, x) in tab1.iter().enumerate() {
 		if (x-tab2[i]).abs() > EPSILON {
 			return false;
 		}
 	}
-	return true;
+	true
 }

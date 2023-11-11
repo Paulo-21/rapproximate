@@ -8,11 +8,11 @@ pub enum Label {
 
 pub fn solve(task : &Task, af : &mut ArgumentationFramework) -> Vec<usize> {
     let problem_type = task.problem;
-    let mut labelling = initLabelling(&af);
+    let mut labelling = initLabelling(af);
     
     let mut hasChanged = true;
     while hasChanged {
-        let new_labelling = propagateDefense(&af, &labelling);
+        let new_labelling = propagateDefense(af, &labelling);
         hasChanged = !sameLabelling(&new_labelling, &labelling);
         /*if sameLabelling(&new_labelling, &labelling) {
             hasChanged = false;
@@ -30,7 +30,7 @@ pub fn solve(task : &Task, af : &mut ArgumentationFramework) -> Vec<usize> {
                     _=> {}
                 }
             }
-            return solution;
+            solution
         },/*Je n'ai pas l'impression que ce type de problème ne soit réellement traité.
         Problem::DC | Problem::DS => {
             match labelling[argument] {
@@ -55,7 +55,7 @@ fn initLabelling( af : &ArgumentationFramework) -> Vec<Label> {
 		    labelling.push(Label::UNDEC);
 		}
 	}
-	return labelling;
+	labelling
 }
 
 fn propagateDefense(af : &ArgumentationFramework, labelling : &Vec<Label>) -> Vec<Label> {
@@ -79,7 +79,7 @@ fn propagateDefense(af : &ArgumentationFramework, labelling : &Vec<Label>) -> Ve
 				result[i] = Label::IN;
 			}
 		}
-		return result;
+		result
 }
 fn allAttackersAreOut(af : &ArgumentationFramework, labelling : &Vec<Label>, index : usize) -> bool {
     for attacker in &af.af_attacker[index] {

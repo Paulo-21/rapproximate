@@ -43,7 +43,7 @@ pub fn solve(af : &ArgumentationFramework, task : &Task) -> Vec<usize> {
     }
     label_in_final
 }
-pub fn solve2(af : &ArgumentationFramework, task : &Task) -> Vec<usize> {
+pub fn solve2(af : &ArgumentationFramework, _task : &Task) -> Vec<usize> {
 
     let mut label_in_final = initLabelling2(af);
     let mut label_in_new = label_in_final.clone();
@@ -91,7 +91,7 @@ fn initLabelling(af : &ArgumentationFramework) -> Vec<Label> {
 	}
     labelling
 }
-fn initLabelling2(af : &ArgumentationFramework) -> (Vec<usize>) {
+fn initLabelling2(af : &ArgumentationFramework) -> Vec<usize> {
     let mut label_in : Vec<usize> = Vec::with_capacity(af.nb_argument);
     
     //let mut label_undec = BTreeSet::new();

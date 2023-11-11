@@ -1,5 +1,5 @@
 use std::{time::Instant, process::exit};
-use crate::{graph::ArgumentationFramework, cli::{Problem, Task, Heuristic}, extensionsemantics::{SimpleGroundedSemanticsSolver, SimpleGroundedSemanticsSolver2}, gradualsemantics::categorizer};
+use crate::{graph::ArgumentationFramework, cli::{Problem, Task, Heuristic}, extensionsemantics::{SimpleGroundedSemanticsSolver}, gradualsemantics::categorizer};
 use crate::cli::Semantics::*;
 
 pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
@@ -27,10 +27,10 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
 		Heuristic::HARPER => {
 			match task.problem {
 				Problem::DC => {
-					return true;
+					true
 				},
 				Problem::DS => {
-					return false;
+					false
 				}
 				_ => {
 					panic!("Problem type is not covered");
@@ -43,18 +43,14 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
 			print!("{};", start.elapsed().as_millis() as f32 / 1000.);
 			print!("{:.17};", degree);
 			let threshold = choice_threshold(&task);
-			if degree >= threshold {
-				return true;
-			} else {
-				return false;
-			}
+			degree >= threshold
 		},
 		Heuristic::INOUT => { /*Inout Part */
 			let threshold = choice_threshold(&task);
 			let in_degree = af.inDegree(task.argument);
 			let out_degree = af.outDegree(task.argument);
-			let res = out_degree >= threshold as usize * in_degree;
-			return res;
+			
+			out_degree >= threshold as usize * in_degree
 		}
 	}
     
