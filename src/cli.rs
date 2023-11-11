@@ -39,9 +39,12 @@ struct Cli {
     #[arg(short = 'p', long="task")]
     /// A computational problem supported by the solver (e.g. DC-CO, DS-PR).
     task : Option<String>,
-    #[arg( long)]
+    #[arg(long)]
     /// Prints the supported computational problems and exits
-    problems : bool
+    problems : bool,
+    /*#[arg(long)]
+    progr
+*/
 }
 
 
