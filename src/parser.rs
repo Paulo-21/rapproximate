@@ -43,7 +43,7 @@ pub fn readingCNF_perf( file_path : &str) -> ArgumentationFramework {
             if let Ok(ip) = line {
                 //println!("{}", ip);
                 let mut line = ip.split_ascii_whitespace();
-                if ip =="" {
+                if ip.is_empty() {
                     break;
                 }
                 let attacker = line.next().unwrap().parse::<i32>().unwrap();
@@ -92,7 +92,7 @@ pub fn readingAPX( file_path : &str) -> ArgumentationFramework {
     let a = contents.trim().split('\n');
 
     for line in a {
-        if !line.starts_with("#") && (!line.trim().eq("")) {
+        if !line.starts_with('#') && (!line.trim().eq("")) {
             //af.add
         }
     }

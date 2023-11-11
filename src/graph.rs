@@ -14,4 +14,10 @@ impl ArgumentationFramework {
         self.af_attacker[(target-1) as usize].push(attacker-1);
         self.af_attackee[(attacker-1) as usize].push(target-1);
     }
+    pub fn inDegree(&self, argument : usize) -> usize {
+        self.af_attacker[argument].len()
+    }
+    pub fn outDegree(&self, argument : usize) -> usize {
+        self.af_attackee[argument].len()
+    }
 }

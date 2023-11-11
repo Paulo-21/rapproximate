@@ -1,12 +1,9 @@
 use crate::{cli::Task, graph::ArgumentationFramework};
 use crate::extensionsemantics::SimpleGroundedSemanticsSolver::Label;
-use std::collections::BTreeSet;
-use std::io::{stdout, Write};
-use std::time::Instant;
+
 use fixedbitset::{self, FixedBitSet};
 pub fn solve(af : &ArgumentationFramework, task : &Task) -> Vec<usize> {
 
-    let problem_type = task.problem;
     let mut label_in_final = initLabelling2(af);
     let mut label_in_new = label_in_final.clone();
     let mut label_out = vec![false;af.nb_argument];
@@ -39,9 +36,10 @@ pub fn solve(af : &ArgumentationFramework, task : &Task) -> Vec<usize> {
         }
         suspect_in.clear();
         label_in_new.clear();
-        let temp = label_in_new;
+        /*let temp = label_in_new;
         label_in_new = n_label_in_new;
-        n_label_in_new = temp;
+        n_label_in_new = temp;*/
+        std::mem::swap(&mut label_in_new, &mut n_label_in_new);
     }
     label_in_final
 }

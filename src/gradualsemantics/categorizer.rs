@@ -3,10 +3,10 @@ use crate::{graph::ArgumentationFramework, cli::Task};
 const EPSILON : f64 = 0.0001;
 
 pub fn solve(af : ArgumentationFramework, task : &Task) -> f64 {
-    /*let score = computeFinalScore(&af);
-    let solution = score[task.argument];*/
+    let score = computeFinalScore(&af);
+    let solution = score[task.argument];
 	//let solution= computeFinalScore2(&af, task.argument);
-	let solution= computeFinalScore2_test(&af, task.argument);
+	//let solution= computeFinalScore2_test(&af, task.argument); // BEST
 	//let solution= compute_final_score2_deep(&af, task.argument);
     solution
 }

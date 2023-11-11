@@ -19,11 +19,19 @@ pub enum Problem {
 pub enum Semantics {
     CO,ST,SST,STG,ID,PR
 }
+#[derive(Debug, Clone, Copy, Default)]
+pub enum Heuristic {
+    HARPER,
+    #[default]
+    HCAT,
+    INOUT,
+}
 #[derive(Debug, Clone)]
 pub struct Task {
     pub problem : Problem,
     pub semantics : Semantics,
     pub argument : usize,
+    pub algo : Heuristic
 }
 
 #[derive(Parser, Debug)]
@@ -42,9 +50,9 @@ struct Cli {
     #[arg(long)]
     /// Prints the supported computational problems and exits
     problems : bool,
-    /*#[arg(long)]
-    progr
-*/
+    /// Avalaible options : harper, inout, hcat
+    #[arg(short, long)]
+    heuristic : Option<String>,
 }
 
 
@@ -95,16 +103,31 @@ pub fn launcher() {
             exit(1) 
         }
     };
+    let mut algo = Heuristic::HCAT;
+    if let Some(x) = cli.heuristic {
+        match x.as_str() {
+            "harper" => {
+                algo = Heuristic::HARPER;
+            },
+            "hcat" => {
+                algo = Heuristic::HCAT;
+            },
+            "inout" => {
+                algo = Heuristic::INOUT;
+            },
+            _ => {
+            }
+        }
+    }
+    let task = Task { problem, semantics, argument : argument_name, algo };
     let file = cli.input_af.clone().unwrap();
     let file_path = file.as_str();
     let start = Instant::now();
     let af = parser::get_input(file_path, Format::CNF);
     print!("{};",start.elapsed().as_millis() as f32 / 1000.0);
-    stdout().flush();
-    let task = Task { problem, semantics, argument : argument_name  };
+    let _ = stdout().flush();
     
     print!("{}", CategorizedBasedApproximateSolver::solve(af, task));
-
 
 }
 
