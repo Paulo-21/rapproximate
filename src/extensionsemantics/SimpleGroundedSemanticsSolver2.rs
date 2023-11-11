@@ -70,9 +70,6 @@ pub fn solve2(af : &ArgumentationFramework, task : &Task) -> Vec<usize> {
                     n_label_in_new.push(*index_of_suspect as usize);
                     label_in_final.push(*index_of_suspect as usize);
                     hasChanged = true;
-                    if task.argument == *index_of_suspect as usize {
-                        return label_in_final;
-                    }
                 }
             }
         }
