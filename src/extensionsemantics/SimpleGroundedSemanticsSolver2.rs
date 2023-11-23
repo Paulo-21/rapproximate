@@ -18,7 +18,7 @@ pub fn solve(af : &ArgumentationFramework, task : &Task) -> Vec<usize> {
                 if !label_out[*argument as usize] {
                     label_out[*argument as usize] = true;
                     suspect_in.push(&af.af_attackee[*argument as usize]);
-                    hasChanged = true;
+                    //hasChanged = true;
                 }
             }
         }
@@ -28,17 +28,14 @@ pub fn solve(af : &ArgumentationFramework, task : &Task) -> Vec<usize> {
                     n_label_in_new.push(*index_of_suspect as usize);
                     label_in_final.push(*index_of_suspect as usize);
                     hasChanged = true;
-                    if task.argument == *index_of_suspect as usize {
+                    /*if task.argument == *index_of_suspect as usize {
                         return label_in_final;
-                    }
+                    }*/
                 }
             }
         }
         suspect_in.clear();
         label_in_new.clear();
-        /*let temp = label_in_new;
-        label_in_new = n_label_in_new;
-        n_label_in_new = temp;*/
         std::mem::swap(&mut label_in_new, &mut n_label_in_new);
     }
     label_in_final
@@ -50,15 +47,14 @@ pub fn solve2(af : &ArgumentationFramework, _task : &Task) -> Vec<usize> {
     let mut label_out = FixedBitSet::with_capacity(af.nb_argument);
     let mut suspect_in = Vec::with_capacity(af.nb_argument);
     let mut hasChanged = true;
+    let mut n_label_in_new = Vec::with_capacity(af.nb_argument);
     while hasChanged {
         hasChanged = false;
-        let mut n_label_in_new = Vec::with_capacity(af.nb_argument/10);
         for i in &label_in_new {
             for argument in &af.af_attackee[*i] {
                 if !label_out[*argument as usize] {
                     label_out.insert(*argument as usize);
                     suspect_in.push(&af.af_attackee[*argument as usize]);
-                    hasChanged = true;
                 }
             }
         }
@@ -72,7 +68,8 @@ pub fn solve2(af : &ArgumentationFramework, _task : &Task) -> Vec<usize> {
             }
         }
         suspect_in.clear();
-        label_in_new = n_label_in_new;
+        label_in_new.clear();
+        std::mem::swap(&mut label_in_new, &mut n_label_in_new);
     }
     label_in_final
 }
@@ -94,7 +91,6 @@ fn initLabelling(af : &ArgumentationFramework) -> Vec<Label> {
 fn initLabelling2(af : &ArgumentationFramework) -> Vec<usize> {
     let mut label_in : Vec<usize> = Vec::with_capacity(af.nb_argument);
     
-    //let mut label_undec = BTreeSet::new();
     for i in 0..af.nb_argument {
 	    if af.af_attacker[i].is_empty() {
 			label_in.push(i);

@@ -31,7 +31,8 @@ pub struct Task {
     pub problem : Problem,
     pub semantics : Semantics,
     pub argument : usize,
-    pub algo : Heuristic
+    pub algo : Heuristic,
+    pub verbose : bool,
 }
 
 #[derive(Parser, Debug)]
@@ -51,8 +52,10 @@ struct Cli {
     /// Prints the supported computational problems and exits
     problems : bool,
     /// Avalaible options : harper, inout, hcat
-    #[arg(short, long)]
+    #[arg(long)]
     heuristic : Option<String>,
+    #[arg(short, long)]
+    verbose : bool,
 }
 
 
@@ -63,6 +66,7 @@ pub fn launcher() {
         print_supported_problems();
         exit(0);
     }
+    
     let arg_name = cli.argument.clone();
     let argument_name = match arg_name {
         Some(arg) => { arg.parse::<usize>().unwrap()-1 },
@@ -119,15 +123,21 @@ pub fn launcher() {
             }
         }
     }
-    let task = Task { problem, semantics, argument : argument_name, algo };
+    let task = Task { problem, semantics, argument : argument_name, algo, verbose : cli.verbose };
     let file = cli.input_af.clone().unwrap();
     let file_path = file.as_str();
     let start = Instant::now();
     let af = parser::get_input(file_path, Format::CNF);
-    print!("{};",start.elapsed().as_millis() as f32 / 1000.0);
+    if task.verbose {
+        print!("{};",start.elapsed().as_millis() as f32 / 1000.0);
+    }
     let _ = stdout().flush();
-    
-    print!("{}", CategorizedBasedApproximateSolver::solve(af, task));
+    if CategorizedBasedApproximateSolver::solve(af, task) {
+        println!("YES");
+    }
+    else {
+        println!("NO");
+    }
 
 }
 
