@@ -54,7 +54,9 @@ struct Cli {
     /// Avalaible options : harper, inout, hcat
     #[arg(long)]
     heuristic : Option<String>,
-    #[arg(short, long)]
+    /// Print details of the execution time of each part of the solution
+    /// " to parse the file ; to solve the grounded extention ; to solve with an heuristic ; the result "
+    #[arg(short, long, verbatim_doc_comment)]
     verbose : bool,
 }
 
