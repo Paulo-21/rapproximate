@@ -1,7 +1,7 @@
 use crate::{cli::Task, graph::ArgumentationFramework};
 use crate::extensionsemantics::SimpleGroundedSemanticsSolver::Label;
-
 use fixedbitset::{self, FixedBitSet};
+
 pub fn solve(af : &ArgumentationFramework, task : &Task) -> Vec<usize> {
 
     let mut label_in_final = initLabelling2(af);
@@ -18,13 +18,12 @@ pub fn solve(af : &ArgumentationFramework, task : &Task) -> Vec<usize> {
                 if !label_out[*argument as usize] {
                     label_out[*argument as usize] = true;
                     suspect_in.push(&af.af_attackee[*argument as usize]);
-                    //hasChanged = true;
                 }
             }
         }
         for el in &suspect_in {
             for index_of_suspect in &**el {
-                if allAttackersAreOut(af, &label_out, *index_of_suspect as usize) {
+                if allAttackersAreOut(af, &label_out, *index_of_suspect as usize) && !label_out[*index_of_suspect as usize] {
                     n_label_in_new.push(*index_of_suspect as usize);
                     label_in_final.push(*index_of_suspect as usize);
                     hasChanged = true;
@@ -40,7 +39,7 @@ pub fn solve(af : &ArgumentationFramework, task : &Task) -> Vec<usize> {
     }
     label_in_final
 }
-pub fn solve2(af : &ArgumentationFramework, _task : &Task) -> Vec<usize> {
+pub fn solve_with_bitset(af : &ArgumentationFramework, _task : &Task) -> Vec<usize> {
 
     let mut label_in_final = initLabelling2(af);
     let mut label_in_new = label_in_final.clone();

@@ -11,7 +11,7 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
 	
     let groundedExtension = SimpleGroundedSemanticsSolver::solve(&t, &mut af);
     //let groundedExtension = SimpleGroundedSemanticsSolver2::solve(&mut af, &t);
-    //let groundedExtension = SimpleGroundedSemanticsSolver2::solve2(&mut af, &t);
+    //let groundedExtension = SimpleGroundedSemanticsSolver2::solve_with_bitset(&mut af, &t);
     if task.verbose {
 		print!("{};", start.elapsed().as_millis() as f32/1000.0);
 	}

@@ -127,7 +127,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "rapproximate_hcat"
+name = "rapproximate"
 version = "0.1.0"
 dependencies = [
  "clap",
