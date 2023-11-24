@@ -23,7 +23,7 @@ pub fn solve(af : &ArgumentationFramework, task : &Task) -> Vec<usize> {
         }
         for el in &suspect_in {
             for index_of_suspect in &**el {
-                if allAttackersAreOut(af, &label_out, *index_of_suspect as usize) && !label_out[*index_of_suspect as usize] {
+                if !label_out[*index_of_suspect as usize] && allAttackersAreOut(af, &label_out, *index_of_suspect as usize)  {
                     n_label_in_new.push(*index_of_suspect as usize);
                     label_in_final.push(*index_of_suspect as usize);
                     hasChanged = true;
