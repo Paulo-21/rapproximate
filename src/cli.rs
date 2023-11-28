@@ -33,6 +33,7 @@ pub struct Task {
     pub argument : usize,
     pub algo : Heuristic,
     pub verbose : bool,
+    pub new : bool,
 }
 
 #[derive(Parser, Debug)]
@@ -58,6 +59,9 @@ struct Cli {
     /// " to parse the file ; to solve the grounded extention ; to solve with an heuristic ; the result "
     #[arg(short, long, verbatim_doc_comment)]
     verbose : bool,
+    /// Choose which algo is used for the grounded part, if set then use the new one
+    #[arg(short, long)]
+    new : bool,
 }
 
 
@@ -125,7 +129,9 @@ pub fn launcher() {
             }
         }
     }
-    let task = Task { problem, semantics, argument : argument_name, algo, verbose : cli.verbose };
+    let task = Task { problem, semantics, argument : argument_name, algo, verbose : cli.verbose,
+        new : cli.new
+    };
     let file = cli.input_af.clone().unwrap();
     let file_path = file.as_str();
     let start = Instant::now();

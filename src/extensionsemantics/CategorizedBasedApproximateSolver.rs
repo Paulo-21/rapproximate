@@ -8,9 +8,12 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
     let start = Instant::now();
     let mut t = task.clone();
     t.problem = Problem::SE;
-	
-    let groundedExtension = SimpleGroundedSemanticsSolver::solve(&t, &mut af);
-    //let groundedExtension = SimpleGroundedSemanticsSolver2::solve(&mut af, &t);
+	let groundedExtension = if task.new {
+		 SimpleGroundedSemanticsSolver2::solve(&mut af, &t)
+	}
+	else {
+		SimpleGroundedSemanticsSolver::solve(&t, &mut af)
+	};
     //let groundedExtension = SimpleGroundedSemanticsSolver2::solve_with_bitset(&mut af, &t);
     if task.verbose {
 		print!("{};", start.elapsed().as_millis() as f32/1000.0);
