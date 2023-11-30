@@ -109,7 +109,7 @@ fn initLabelling_bitset(af : &ArgumentationFramework) -> FixedBitSet {
     label_in
 }
 
-fn allAttackersAreOut(af : &ArgumentationFramework, labelling : &Vec<bool>, index : usize) -> bool {
+fn allAttackersAreOut(af : &ArgumentationFramework, labelling : &[bool], index : usize) -> bool {
     for attacker in &af.af_attacker[index] {
 		if !labelling[(*attacker) as usize] {
 			return false;

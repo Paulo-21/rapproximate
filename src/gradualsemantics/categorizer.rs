@@ -109,7 +109,7 @@ fn initScores(af : &ArgumentationFramework) -> Vec<f64> {
     vec![1.0;af.nb_argument]
 }
 
-fn stabilisation(tab1 : &Vec<f64>, tab2 : &Vec<f64>) -> bool {
+fn stabilisation(tab1 : &[f64], tab2 : &[f64]) -> bool {
 	for (i, x) in tab1.iter().enumerate() {
 		if (x-tab2[i]).abs() > EPSILON {
 			return false;
