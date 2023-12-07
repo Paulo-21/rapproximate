@@ -10,6 +10,9 @@ pub fn solve(af : ArgumentationFramework, task : &Task) -> f64 {
 	//let solution= compute_final_score2_deep(&af, task.argument);
     score[task.argument]
 }
+pub fn solve_new(af : ArgumentationFramework, task : &Task) -> f64 {
+	computeFinalScore2_test(&af, task.argument) // BEST
+}
 
 fn computeFinalScore(af : &ArgumentationFramework) -> Vec<f64> {
     let mut res = initScores(af);
@@ -109,7 +112,7 @@ fn initScores(af : &ArgumentationFramework) -> Vec<f64> {
     vec![1.0;af.nb_argument]
 }
 
-fn stabilisation(tab1 : &Vec<f64>, tab2 : &Vec<f64>) -> bool {
+fn stabilisation(tab1 : &[f64], tab2 : &[f64]) -> bool {
 	for (i, x) in tab1.iter().enumerate() {
 		if (x-tab2[i]).abs() > EPSILON {
 			return false;

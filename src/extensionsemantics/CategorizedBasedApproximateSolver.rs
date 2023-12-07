@@ -8,9 +8,12 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
     let start = Instant::now();
     let mut t = task.clone();
     t.problem = Problem::SE;
-	
-    let groundedExtension = SimpleGroundedSemanticsSolver::solve(&t, &mut af);
-    //let groundedExtension = SimpleGroundedSemanticsSolver2::solve(&mut af, &t);
+	let groundedExtension = if task.new {
+		 SimpleGroundedSemanticsSolver2::solve(&mut af, &t)
+	}
+	else {
+		SimpleGroundedSemanticsSolver::solve(&t, &mut af)
+	};
     //let groundedExtension = SimpleGroundedSemanticsSolver2::solve_with_bitset(&mut af, &t);
     if task.verbose {
 		print!("{};", start.elapsed().as_millis() as f32/1000.0);
@@ -45,24 +48,29 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
 		},
 		Heuristic::HCAT => { /*h-Categorized Part */
 			let start = Instant::now();
-			let degree = categorizer::solve(af, &task);
+			let degree = if task.new {
+				categorizer::solve_new(af, &task)
+			}
+			else {
+				categorizer::solve(af, &task)
+			};
 			if task.verbose {
 				print!("{};", start.elapsed().as_millis() as f32 / 1000.);
 				print!("{:.17};", degree);
 			}
-			
-			let threshold = choice_threshold(&task);
+			let threshold = if let Some(t) = task.threshold { t }
+			else { choice_threshold(&task) };
 			degree >= threshold
 		},
 		Heuristic::INOUT => { /*Inout Part */
-			let threshold = choice_threshold(&task);
+			let threshold = 
+			if let Some(t) = task.threshold { t }
+			else { choice_threshold(&task) };
 			let in_degree = af.inDegree(task.argument);
 			let out_degree = af.outDegree(task.argument);
 			out_degree >= threshold as usize * in_degree
 		}
 	}
-    
-    
 }
 fn choice_threshold(task : &Task) -> f64 {
     if task.problem == Problem::DC  {

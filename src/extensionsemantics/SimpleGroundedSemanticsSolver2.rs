@@ -2,7 +2,7 @@ use crate::{cli::Task, graph::ArgumentationFramework};
 use crate::extensionsemantics::SimpleGroundedSemanticsSolver::Label;
 use fixedbitset::{self, FixedBitSet};
 
-pub fn solve(af : &ArgumentationFramework, task : &Task) -> Vec<usize> {
+pub fn solve(af : &ArgumentationFramework, _task : &Task) -> Vec<usize> {
 
     let mut label_in_final = initLabelling2(af);
     let mut label_in_new = label_in_final.clone();
@@ -109,7 +109,7 @@ fn initLabelling_bitset(af : &ArgumentationFramework) -> FixedBitSet {
     label_in
 }
 
-fn allAttackersAreOut(af : &ArgumentationFramework, labelling : &Vec<bool>, index : usize) -> bool {
+fn allAttackersAreOut(af : &ArgumentationFramework, labelling : &[bool], index : usize) -> bool {
     for attacker in &af.af_attacker[index] {
 		if !labelling[(*attacker) as usize] {
 			return false;
