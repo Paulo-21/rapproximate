@@ -10,6 +10,9 @@ pub fn solve(af : ArgumentationFramework, task : &Task) -> f64 {
 	//let solution= compute_final_score2_deep(&af, task.argument);
     score[task.argument]
 }
+pub fn solve_new(af : ArgumentationFramework, task : &Task) -> f64 {
+	computeFinalScore2_test(&af, task.argument) // BEST
+}
 
 fn computeFinalScore(af : &ArgumentationFramework) -> Vec<f64> {
     let mut res = initScores(af);
