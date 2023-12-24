@@ -1,15 +1,16 @@
 use std::{time::Instant, process::exit};
-use crate::{graph::ArgumentationFramework, cli::{Problem, Task, Heuristic}, extensionsemantics::{SimpleGroundedSemanticsSolver, SimpleGroundedSemanticsSolver2}, gradualsemantics::categorizer};
+use crate::{graph::ArgumentationFramework, cli::{Problem, Task, Heuristic}, extensionsemantics::{SimpleGroundedSemanticsSolver, SimpleGroundedSemanticsSolver2}, gradualsemantics::{categorizer, counting, max_based, card_based, no_self_att_hcat}};
 use crate::cli::Semantics::*;
 
 pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
     
-    /*Grounded Part */
+	/*Grounded Part */
     let start = Instant::now();
     let mut t = task.clone();
     t.problem = Problem::SE;
+	
 	let groundedExtension = if task.new {
-		 SimpleGroundedSemanticsSolver2::solve(&mut af, &t)
+		SimpleGroundedSemanticsSolver2::solve(&mut af, &t)
 	}
 	else {
 		SimpleGroundedSemanticsSolver::solve(&t, &mut af)
@@ -35,15 +36,9 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
 	match task.algo {
 		Heuristic::HARPER => {
 			match task.problem {
-				Problem::DC => {
-					true
-				},
-				Problem::DS => {
-					false
-				}
-				_ => {
-					panic!("Problem type is not covered");
-				}
+				Problem::DC => true,
+				Problem::DS => false,
+				_ => panic!("Problem type is not covered")
 			}
 		},
 		Heuristic::HCAT => { /*h-Categorized Part */
@@ -69,8 +64,49 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
 			let in_degree = af.inDegree(task.argument);
 			let out_degree = af.outDegree(task.argument);
 			out_degree >= threshold as usize * in_degree
-		}
+		},
+		Heuristic::NoSelfAtt => {
+			let degree = no_self_att_hcat::solve(af, &task);
+			if task.verbose {
+				print!("{};", start.elapsed().as_millis() as f32 / 1000.);
+				print!("{:.17};", degree);
+			}
+			let threshold = if let Some(t) = task.threshold { t }
+			else { choice_threshold(&task) };
+			degree >= threshold
+		},
+		Heuristic::Card => {
+			let degree = card_based::solve(af, &task);
+			if task.verbose {
+				print!("{};", start.elapsed().as_millis() as f32 / 1000.);
+				print!("{:.17};", degree);
+			}
+			let threshold = if let Some(t) = task.threshold { t }
+			else { choice_threshold(&task) };
+			degree >= threshold
+		},
+		Heuristic::Max => {
+			let degree = max_based::solve(af, &task);
+			if task.verbose {
+				print!("{};", start.elapsed().as_millis() as f32 / 1000.);
+				print!("{:.17};", degree);
+			}
+			let threshold = if let Some(t) = task.threshold { t }
+			else { choice_threshold(&task) };
+			degree >= threshold
+		},
+		Heuristic::Counting => {
+			let degree = counting::solve(af, &task, 3, 0.9);
+			if task.verbose {
+				print!("{};", start.elapsed().as_millis() as f32 / 1000.);
+				print!("{:.17};", degree);
+			}
+			let threshold = if let Some(t) = task.threshold { t }
+			else { choice_threshold(&task) };
+			degree >= threshold
+		},
 	}
+
 }
 fn choice_threshold(task : &Task) -> f64 {
     if task.problem == Problem::DC  {

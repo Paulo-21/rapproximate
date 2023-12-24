@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 clap = { version = "4.4.7", features = ["derive"] }
 fixedbitset = "0.4.2"
+nalgebra = "0.32"
 
 [profile.release]
 lto = true

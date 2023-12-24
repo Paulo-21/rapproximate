@@ -25,6 +25,11 @@ pub enum Heuristic {
     #[default]
     HCAT,
     INOUT,
+    NoSelfAtt,
+    Card,
+    Max,
+    Counting,
+
 }
 #[derive(Debug, Clone)]
 pub struct Task {
@@ -53,11 +58,11 @@ struct Cli {
     #[arg(long)]
     /// Prints the supported computational problems and exits
     problems : bool,
-    /// Avalaible options : harper, inout, hcat
+    /// Avalaible options : harper, inout, hcat, noselfatt, card, maxb, counting
     #[arg(long)]
     heuristic : Option<String>,
     /// Print details of the execution time of each part of the solution
-    /// " to parse the file ; to solve the grounded extention ; to solve with an heuristic ; the result "
+    /// "to parse the file ; to solve the grounded extention ; to solve with an heuristic ; the result "
     #[arg(short, long, verbatim_doc_comment)]
     verbose : bool,
     /// Choose which algo is used for the grounded part, if set then use the new one
@@ -120,16 +125,16 @@ pub fn launcher() {
     let mut algo = Heuristic::HCAT;
     if let Some(x) = cli.heuristic {
         match x.as_str() {
-            "harper" => {
-                algo = Heuristic::HARPER;
-            },
-            "hcat" => {
-                algo = Heuristic::HCAT;
-            },
-            "inout" => {
-                algo = Heuristic::INOUT;
-            },
+            "harper" => algo = Heuristic::HARPER,
+            "hcat" => algo = Heuristic::HCAT,
+            "inout" => algo = Heuristic::INOUT,
+            "noselfatt" => algo = Heuristic::NoSelfAtt,
+            "card" => algo = Heuristic::Card,
+            "maxb" => algo = Heuristic::Max,
+            "counting" => algo = Heuristic::Counting,
             _ => {
+                eprintln!("The heuristic {x} is not know, look at the help section for more detail");
+                exit(1);
             }
         }
     }

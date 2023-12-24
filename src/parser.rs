@@ -41,13 +41,12 @@ pub fn readingCNF_perf( file_path : &str) -> ArgumentationFramework {
         let mut af = ArgumentationFramework::new(nb_arg);
         for line in lines {
             if let Ok(ip) = line {
-                //println!("{}", ip);
-                let mut line = ip.split_ascii_whitespace();
-                if ip.is_empty() {
+                if ip.is_empty() || ip.starts_with('#') {
                     break;
                 }
-                let attacker = line.next().unwrap().parse::<i32>().unwrap();
-                let target = line.next().unwrap().parse::<i32>().unwrap();
+                let mut split = ip.split_ascii_whitespace();
+                let attacker = split.next().unwrap().parse::<i32>().unwrap();
+                let target = split.next().unwrap().parse::<i32>().unwrap();
                 af.add_attack(attacker, target);
             }
         }
@@ -59,8 +58,10 @@ pub fn readingCNF_perf( file_path : &str) -> ArgumentationFramework {
 
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
 where P: AsRef<Path>, {
+    let buffsize = 1<<20;
     let file = File::open(filename)?;
-    Ok(io::BufReader::new(file).lines())
+    //println!("{}",buffsize);
+    Ok(io::BufReader::with_capacity(buffsize, file).lines())
 }
 
 fn find_number_argument(file_path : &str) -> i32 {
