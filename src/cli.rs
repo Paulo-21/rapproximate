@@ -52,6 +52,9 @@ struct Cli {
     #[arg(short='f', long="input_AF")]
     /// Path of the file containing the AF.
     input_af : Option<String>,
+    #[arg(long="fo")]
+    /// Format of the file containing the AF.
+    input_format : Option<String>,
     #[arg(short = 'p', long="task")]
     /// A computational problem supported by the solver (e.g. DC-CO, DS-PR).
     task : Option<String>,
@@ -146,7 +149,16 @@ pub fn launcher() {
     let file = cli.input_af.clone().unwrap();
     let file_path = file.as_str();
     let start = Instant::now();
-    let af = parser::get_input(file_path, Format::CNF);
+    let af = if let Some(fo) = cli.input_format {
+        if fo == "apx" {
+            parser::get_input(file_path, Format::APX)
+        }
+        else {
+             parser::get_input(file_path, Format::CNF)
+        }
+    } else {
+        parser::get_input(file_path, Format::CNF)
+    };
     if task.verbose {
         print!("{};",start.elapsed().as_millis() as f32 / 1000.0);
     }
