@@ -9,7 +9,7 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
     let mut t = task.clone();
     t.problem = Problem::SE;
 	
-	let groundedExtension = if task.new {
+	let grounded_extension = if task.new {
 		SimpleGroundedSemanticsSolver2::solve(&mut af, &t)
 	}
 	else {
@@ -19,14 +19,14 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
     if task.verbose {
 		print!("{};", start.elapsed().as_millis() as f32/1000.0);
 	}
-    if groundedExtension.contains(&task.argument) {
+    if grounded_extension.contains(&task.argument) {
 		if task.verbose {
 			print!("None;None;");
 		}
 		return true;
 	}
 	for  attacker in &af.af_attacker[task.argument] {
-		if groundedExtension.contains(&(*attacker as usize)) {
+		if grounded_extension.contains(&(*attacker as usize)) {
 			if task.verbose {
 				print!("None;None;");
 			}
@@ -96,7 +96,8 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
 			degree >= threshold
 		},
 		Heuristic::Counting => {
-			let degree = counting::solve(af, &task, 3, 0.9);
+			//let degree = counting::solve(af, &task, 3, 0.9);
+			let degree = counting::solve2(af, &task, 3, 0.9);
 			if task.verbose {
 				print!("{};", start.elapsed().as_millis() as f32 / 1000.);
 				print!("{:.17};", degree);
