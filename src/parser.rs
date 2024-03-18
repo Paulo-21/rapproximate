@@ -2,7 +2,6 @@ use std::fs::{self, File};
 use std::io::{BufRead, self};
 use std::path::Path;
 use std::process::exit;
-
 use crate::graph::ArgumentationFramework;
 use crate::cli::Format;
 
@@ -23,8 +22,8 @@ let iter: Vec<&str> = first_line.split_ascii_whitespace().collect();
 let nb_arg = iter[2].parse::<usize>().unwrap();
 let mut af = ArgumentationFramework::new(nb_arg);
 for line in content_iter {
-    if !line.starts_with('#') && (!line.trim().eq("")) {
-        let (attacker,target) = parseCNFAttackLine(line);
+    if !line.starts_with('#') {//&& (!line.trim().eq("")) {
+        let (attacker,target) = parse_cnfattack_line(line);
         //println!("{} {}", attacker, target);
         af.add_attack(attacker, target);
     }
@@ -75,8 +74,8 @@ fn find_number_argument(file_path : &str) -> i32 {
     }
     nb_arg
 }
-
-fn parseCNFAttackLine (line : &str) -> (i32,i32) {
+#[inline(always)]
+fn parse_cnfattack_line (line : &str) -> (i32,i32) {
     let mut a = line.split_ascii_whitespace();
     let att = a.next().unwrap().parse::<i32>().unwrap();
     let targ = a.next().unwrap().parse::<i32>().unwrap();

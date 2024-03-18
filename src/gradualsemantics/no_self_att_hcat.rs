@@ -3,45 +3,42 @@ use crate::{graph::ArgumentationFramework, cli::Task};
 const EPSILON : f64 = 0.0001;
 
 pub fn solve(af : ArgumentationFramework, task : &Task) -> f64 {
-    let score = computeFinalScore(&af);
+    let score = compute_final_score(&af);
     score[task.argument]
 }
 
-fn computeFinalScore(af : &ArgumentationFramework) -> Vec<f64> {
-    let mut res = initScores(af);
-    let mut newScores = initScores(af);
-    let mut hasChanged = true;
+fn compute_final_score(af : &ArgumentationFramework) -> Vec<f64> {
+    let mut res = init_scores(af);
+    let mut new_scores = init_scores(af);
+    let mut has_changed = true;
     
-		while hasChanged {
-			/*(newScores, hasChanged) =*/ computeOneStep(af,&res, &mut newScores);
-			if stabilisation(&res,&newScores) {
-				hasChanged = false;
+		while has_changed {
+			has_changed = false;
+			for i in 0..res.len() {
+				let mut sum_score_attacker = 0.;
+				let ic = i as i32;
+				for  attacker in &af.af_attacker[i] {
+					if ic == *attacker {
+						new_scores[i] = 0.;
+						break;
+					}
+					unsafe {
+						sum_score_attacker += res.get_unchecked(*attacker as usize);
+					}
+				}
+				if new_scores[i] == 0. { continue; }
+
+				new_scores[i] =  1. / (1. + sum_score_attacker);
+				if (new_scores[i] - res[i]).abs() > EPSILON {
+					has_changed = true;
+				}
 			}
-            std::mem::swap(&mut res, &mut newScores);
+            std::mem::swap(&mut res, &mut new_scores);
 		}
 		res
 }
 
-fn computeOneStep(af : &ArgumentationFramework, scoresArg : &Vec<f64>, res : &mut Vec<f64>) {//-> (Vec<f64>, bool) {
-    //let mut res = vec![0.;scoresArg.len()];
-    //let mut res = Vec::with_capacity(scoresArg.len());
-    //let mut haschanged = true;
-		for i in 0..scoresArg.len() {
-			let mut sumScoreAttacker = 0.;
-            if af.af_attacker[i].contains(&(i as i32)) {
-                res[i] = 0.;
-                continue;
-            }
-			for  attacker in &af.af_attacker[i] {
-                unsafe {
-                    sumScoreAttacker += scoresArg.get_unchecked(*attacker as usize);
-                }
-			}
-			res[i] =  1. / (1. + sumScoreAttacker);
-		}
-		//return (res, haschanged);
-}
-fn initScores(af : &ArgumentationFramework) -> Vec<f64> {
+fn init_scores(af : &ArgumentationFramework) -> Vec<f64> {
     vec![1.0;af.nb_argument]
 }
 

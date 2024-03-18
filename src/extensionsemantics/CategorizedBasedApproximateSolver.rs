@@ -22,7 +22,7 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
     if groundedExtension.contains(&task.argument) {
 		if task.verbose {
 			print!("None;None;");
-		}
+		}	
 		return true;
 	}
 	for  attacker in &af.af_attacker[task.argument] {
