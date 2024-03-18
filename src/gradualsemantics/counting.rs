@@ -1,7 +1,8 @@
+use std::io::{stdout, Write};
 use std::ops::{Div, Mul};
 use crate::graph::ArgumentationFramework;
 use crate::cli::Task;
-use nalgebra::{DMatrix, Matrix, VecStorage, Dyn};
+use nalgebra::{DMatrix, Dyn, Matrix, VecStorage};
 
 pub fn solve(af : ArgumentationFramework, task : &Task, k : i32, alpha : f64) -> f64 {
     let mut v = vec![0.;af.nb_argument*af.nb_argument];
@@ -28,6 +29,33 @@ pub fn solve(af : ArgumentationFramework, task : &Task, k : i32, alpha : f64) ->
     }
     
     *(w.get(task.argument).unwrap())
+}
+pub fn solve2(af : ArgumentationFramework, task : &Task, k : i32, alpha : f64) -> f64 {
+    let mut v = vec![0.;af.nb_argument*af.nb_argument];
+    for (i, a) in af.af_attacker.iter().enumerate() {
+        for n in a {
+            v[af.nb_argument*i + *n as usize] = 1.;
+        }
+    }
+    let _ = stdout().flush();
+    let  matrice = DMatrix::from_iterator(af.nb_argument, af.nb_argument, v);
+    println!("starting");
+    let eigendec = matrice.symmetric_eigen();
+    println!("eigen");
+    let _ = stdout().flush();
+    // Obtenez les matrices P et D
+    let p = eigendec.eigenvectors * alpha;
+    let d = eigendec.eigenvalues;
+
+    // Calculez l'inverse de P
+    let p_inv = p.clone().try_inverse().expect("La matrice P est singulière");
+
+    // Calculez A = PDP^(-1)
+    let result = &p * &d * &p_inv;
+
+    println!("Matrice A = PDP^(-1):\n{}", result);
+    println!("{} {k}", task.argument);
+    2.
 }
 
 fn print_matrice(matrice : &Matrix<f64, Dyn, Dyn, VecStorage<f64,Dyn,Dyn>>, len : usize) {
