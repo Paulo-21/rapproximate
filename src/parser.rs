@@ -60,6 +60,11 @@ pub fn reading_cnf_perf( file_path : &str) -> ArgumentationFramework{
     let mut af = ArgumentationFramework::new(nb_arg);
     data = &data[end + 1..];
     loop {
+        if data[0] == b'#' {
+            let Some(end) = memchr(b'\n', &data) else {break;};
+            data = &data[end+1..];
+            continue;
+        }
         let Some(separator) = memchr(b' ', data) else {
             break;
         };
@@ -68,6 +73,7 @@ pub fn reading_cnf_perf( file_path : &str) -> ArgumentationFramework{
         let target = bytes_to_int(&data[separator + 1..separator + end]).unwrap();
         af.add_attack(att, target);
         data = &data[separator + end + 1..];
+        if data.len() == 0 {break;}
      }
     af
 }
