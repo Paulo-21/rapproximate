@@ -16,9 +16,8 @@ fn compute_final_score(af : &ArgumentationFramework) -> Vec<f64> {
 			has_changed = false;
 			for i in 0..res.len() {
 				let mut sum_score_attacker = 0.;
-				let ic = i as i32;
 				for  attacker in &af.af_attacker[i] {
-					if ic == *attacker {
+					if i as u32 == *attacker {
 						new_scores[i] = 0.;
 						break;
 					}

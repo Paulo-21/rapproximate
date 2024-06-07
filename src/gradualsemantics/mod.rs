@@ -4,3 +4,4 @@ pub mod card_based;
 pub mod max_based;
 pub mod counting;
 pub mod eigen;
+pub mod perso;

@@ -8,8 +8,8 @@ use crate::extensionsemantics::CategorizedBasedApproximateSolver;
 use crate::parser;
 
 pub enum Format {
-    APX,
-    CNF
+    Apx,
+    Cnf
 }
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Problem {
@@ -29,7 +29,7 @@ pub enum Heuristic {
     Card,
     Max,
     Counting,
-
+    Perso,
 }
 #[derive(Debug, Clone)]
 pub struct Task {
@@ -135,6 +135,7 @@ pub fn launcher() {
             "card" => algo = Heuristic::Card,
             "maxb" => algo = Heuristic::Max,
             "counting" => algo = Heuristic::Counting,
+            "perso" => algo = Heuristic::Perso,
             _ => {
                 eprintln!("The heuristic {x} is not know, look at the help section for more detail");
                 exit(1);
@@ -151,13 +152,13 @@ pub fn launcher() {
     let start = Instant::now();
     let af = if let Some(fo) = cli.input_format {
         if fo == "apx" {
-            parser::get_input(file_path, Format::APX)
+            parser::get_input(file_path, Format::Apx)
         }
         else {
-             parser::get_input(file_path, Format::CNF)
+            parser::get_input(file_path, Format::Cnf)
         }
     } else {
-        parser::get_input(file_path, Format::CNF)
+        parser::get_input(file_path, Format::Cnf)
     };
     if task.verbose {
         print!("{};",start.elapsed().as_millis() as f32 / 1000.0);

@@ -14,7 +14,7 @@ pub fn solve_new(af : ArgumentationFramework, task : &Task) -> f64 {
 	compute_final_score2_test(&af, task.argument) // BEST
 }
 
-fn compute_final_score(af : &ArgumentationFramework) -> Vec<f64> {
+pub fn compute_final_score(af : &ArgumentationFramework) -> Vec<f64> {
     let mut res = init_scores(af);
     let mut new_scores = init_scores(af);
     let mut has_changed = true;

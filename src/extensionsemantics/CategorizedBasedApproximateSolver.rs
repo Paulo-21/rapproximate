@@ -1,5 +1,5 @@
 use std::{time::Instant, process::exit};
-use crate::{graph::ArgumentationFramework, cli::{Problem, Task, Heuristic}, extensionsemantics::{SimpleGroundedSemanticsSolver, SimpleGroundedSemanticsSolver2}, gradualsemantics::{categorizer, counting, max_based, card_based, no_self_att_hcat}};
+use crate::{cli::{Heuristic, Problem, Task}, extensionsemantics::{SimpleGroundedSemanticsSolver, SimpleGroundedSemanticsSolver2}, gradualsemantics::{card_based, categorizer::{self, compute_final_score}, counting, max_based, no_self_att_hcat, perso}, graph::ArgumentationFramework};
 use crate::cli::Semantics::*;
 
 pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
@@ -105,6 +105,21 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
 			let threshold = if let Some(t) = task.threshold { t }
 			else { choice_threshold(&task) };
 			degree >= threshold
+		},
+		Heuristic::Perso => {
+			let hcat = compute_final_score(&af);
+			let mut gr = vec![0.5; af.nb_argument];
+			for l in grounded_extension { gr[l] = 1.;
+				for k in &af.af_attackee[l] { gr[*k as usize] = 0.; }
+			}
+			let degree = perso::solve(&af, &gr, &hcat);
+			if task.verbose {
+				print!("{};", start.elapsed().as_millis() as f32 / 1000.);
+				print!("{:.17};", degree[task.argument]);
+			}
+			let threshold = if let Some(t) = task.threshold { t }
+			else { choice_threshold(&task) };
+			degree[task.argument] >= threshold
 		},
 	}
 
