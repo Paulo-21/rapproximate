@@ -1,5 +1,5 @@
 # rapproximate
-An reimplementation of ARIPOTER, a Approximate reasoning solver for iccma task.
+An reimplementation of ARIPOTER, an approximate reasoning solver for iccma task.
 
 
 To print help<br>
