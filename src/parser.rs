@@ -7,12 +7,12 @@ use memmap2::Mmap;
 pub fn get_input(file_path : &str, format : Format) -> ArgumentationFramework {
     match format {
         Format::Apx => reading_apx(file_path),
-        //Format::Cnf => reading_cnf(file_path),
-        Format::Cnf => reading_cnf_perf(file_path),
+        Format::Cnf => reading_cnf(file_path),
+        //Format::Cnf => reading_cnf_perf(file_path),
     }
 }
 
-pub fn _reading_cnf( file_path : &str) -> ArgumentationFramework {
+pub fn reading_cnf( file_path : &str) -> ArgumentationFramework {
     let contents = fs::read_to_string(file_path)
     .expect("Should have been able to read the file");
     let mut content_iter = contents.trim().split('\n');
@@ -22,7 +22,7 @@ pub fn _reading_cnf( file_path : &str) -> ArgumentationFramework {
     let mut af = ArgumentationFramework::new(nb_arg);
     for line in content_iter {
         if !line.is_empty() && !line.starts_with('#') {
-            let (attacker,target) = _parse_cnfattack_line(line);
+            let (attacker,target) = _parse_cnfattack_line(line.trim());
             af.add_attack(attacker, target);
         }
     }

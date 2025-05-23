@@ -1,3 +1,4 @@
+use core::panic;
 use std::{time::Instant, process::exit};
 use crate::{cli::{Heuristic, Problem, Task}, extensionsemantics::{SimpleGroundedSemanticsSolver, SimpleGroundedSemanticsSolver2}, gradualsemantics::{card_based, categorizer::{self, compute_final_score}, counting, max_based, no_self_att_hcat, perso}, graph::ArgumentationFramework};
 use crate::cli::Semantics::*;
@@ -9,7 +10,7 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
     let mut t = task.clone();
     t.problem = Problem::SE;
 	
-	let grounded_extension = if task.new {
+	let grounded_extension = if task.old {
 		SimpleGroundedSemanticsSolver2::solve(&mut af, &t)
 	}
 	else {
@@ -43,7 +44,7 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
 		},
 		Heuristic::HCAT => { /*h-Categorized Part */
 			let start = Instant::now();
-			let degree = if task.new {
+			let degree = if !task.old {
 				categorizer::solve_new(af, &task)
 			}
 			else {
@@ -121,6 +122,7 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
 			else { choice_threshold(&task) };
 			degree[task.argument] >= threshold
 		},
+		_ => {panic!("Any heuristic selected");}
 	}
 
 }
@@ -157,4 +159,30 @@ fn choice_threshold(task : &Task) -> f64 {
         }
         eprintln!("no problem set");
         exit(1);
+}
+pub fn choice_threshold_v2_heuristic(task : &mut Task) {
+    let (h, t) = 
+	match task.problem {
+		Problem::DC => {
+			match task.semantics {
+				CO  => (Heuristic::Card, 0.25),
+				ST  => (Heuristic::Card, 0.5),
+				SST =>  (Heuristic::Card, 0.25),
+				ID  => (Heuristic::INOUT, 8.),
+				_   => {panic!("This combination (semantics, problem) is not handled by this solver.");}	
+			}
+		},
+		Problem::DS => {
+			match task.semantics {
+				PR => (Heuristic::Card, 0.5),
+				ST => (Heuristic::Card, 0.1),
+				SST => (Heuristic::INOUT, 8.),
+				_ => {panic!("This combination (semantics, problem) is not handled by this solver.");}
+			}
+		},
+		_ => { panic!("Not supported"); }
+	};
+	task.algo = h;
+	task.threshold = Some(t);
+	//println!("V2");
 }

@@ -19,10 +19,11 @@ pub enum Problem {
 pub enum Semantics {
     CO,ST,SST,STG,ID,PR
 }
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub enum Heuristic {
-    HARPER,
     #[default]
+    V2,
+    HARPER,
     HCAT,
     INOUT,
     NoSelfAtt,
@@ -38,7 +39,7 @@ pub struct Task {
     pub argument : usize,
     pub algo : Heuristic,
     pub verbose : bool,
-    pub new : bool,
+    pub old : bool,
     pub threshold : Option<f64>,
 }
 
@@ -70,7 +71,7 @@ struct Cli {
     verbose : bool,
     /// Choose which algo is used for the grounded part, if set then use the new one
     #[arg(short, long)]
-    new : bool,
+    old : bool,
     ///Choose the value of the threshold for the graduated semantic
     #[arg(short, long)]
     thresold : Option<f64>,
@@ -125,7 +126,7 @@ pub fn launcher() {
             exit(1) 
         }
     };
-    let mut algo = Heuristic::HCAT;
+    let mut algo = Heuristic::V2;
     if let Some(x) = cli.heuristic {
         match x.as_str() {
             "harper" => algo = Heuristic::HARPER,
@@ -142,11 +143,14 @@ pub fn launcher() {
             }
         }
     }
-    let task = Task { problem, semantics, argument : argument_name, algo,
+    let mut task = Task { problem, semantics, argument : argument_name, algo,
         verbose : cli.verbose,
-        new : cli.new,
+        old : cli.old,
         threshold : cli.thresold
     };
+    if task.algo == Heuristic::V2 && task.threshold.is_none() {
+        CategorizedBasedApproximateSolver::choice_threshold_v2_heuristic(&mut task);
+    }
     let file = cli.input_af.clone().unwrap();
     let file_path = file.as_str();
     let start = Instant::now();
