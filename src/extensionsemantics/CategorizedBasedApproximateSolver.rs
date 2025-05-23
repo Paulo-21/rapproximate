@@ -10,7 +10,7 @@ pub fn solve(mut af : ArgumentationFramework, task : Task) -> bool{
     let mut t = task.clone();
     t.problem = Problem::SE;
 	
-	let grounded_extension = if task.old {
+	let grounded_extension = if !task.old {
 		SimpleGroundedSemanticsSolver2::solve(&mut af, &t)
 	}
 	else {
@@ -184,5 +184,5 @@ pub fn choice_threshold_v2_heuristic(task : &mut Task) {
 	};
 	task.algo = h;
 	task.threshold = Some(t);
-	//println!("V2");
+	eprintln!("V2");
 }

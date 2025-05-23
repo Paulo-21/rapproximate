@@ -9,7 +9,6 @@ pub enum Label {
 pub fn solve(task : &Task, af : &mut ArgumentationFramework) -> Vec<usize> {
     let problem_type = task.problem;
     let mut labelling = initLabelling(af);
-    
     let mut hasChanged = true;
     while hasChanged {
         let new_labelling = propagateDefense(af, &labelling);

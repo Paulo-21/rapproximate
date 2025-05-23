@@ -1,7 +1,6 @@
 use crate::{cli::Task, graph::ArgumentationFramework};
 
 pub fn solve(af : &ArgumentationFramework, _task : &Task) -> Vec<usize> {
-
     let mut label_in_final = init_labelling2(af);
     let mut label_in_new = label_in_final.clone();
     let mut label_out = vec![false;af.nb_argument];
