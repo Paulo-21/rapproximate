@@ -184,5 +184,4 @@ pub fn choice_threshold_v2_heuristic(task : &mut Task) {
 	};
 	task.algo = h;
 	task.threshold = Some(t);
-	eprintln!("V2");
 }

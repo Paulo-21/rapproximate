@@ -44,7 +44,7 @@ pub struct Task {
 }
 
 #[derive(Parser, Debug)]
-#[command(author="Paul Cibier", version, about="This tool can solve all the problems in the approximate track of ICCMA 2023",
+#[command(author="Paul Cibier", version, about="This tool can solve all the problems in the approximate track of ICCMA 2025",
 long_about = None)]
 struct Cli {
     #[arg(short, long)]
@@ -62,7 +62,8 @@ struct Cli {
     #[arg(long)]
     /// Prints the supported computational problems and exits
     problems : bool,
-    /// Avalaible options : harper, inout, hcat, noselfatt, card, maxb, counting
+    /// Avalaible options : harper, inout, hcat, noselfatt, card, maxb, counting,
+    /// iccma2025 heuristic is the default heuristic
     #[arg(long)]
     heuristic : Option<String>,
     /// Print details of the execution time of each part of the solution
